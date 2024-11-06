@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+mkdir -p out_wasm
+
 # Set up Emscripten environment
 # source ~/emsdk/emsdk_env.sh  # Update this line if needed
 
