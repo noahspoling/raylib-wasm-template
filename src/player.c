@@ -6,7 +6,6 @@ static Vector2 playerPosition;
 
 void PlayerInit(void) {
     playerPosition = (Vector2){ SCREEN_WIDTH/2, SCREEN_HEIGHT/2 };
-    
 }
 
 void PlayerUpdate(void) {

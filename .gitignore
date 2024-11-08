@@ -1,1 +1,4 @@
 out
+out_wasm
+
+src/game/

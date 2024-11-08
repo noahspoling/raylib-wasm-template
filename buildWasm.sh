@@ -3,8 +3,7 @@
 set -euo pipefail
 
 mkdir -p out_wasm
-
-SRC_FILES="src/main.c src/game.c src/player.c src/map.c src/renderer.c"
+SRC_FILES=$(find src -name '*.c') # Recursively find all .c files in src directory
 OUT_DIR="out_wasm"
 
 
@@ -28,6 +27,7 @@ emcc $SRC_FILES -o $OUT_DIR/index.html \
     -s ASYNCIFY \
     -s EXPORTED_FUNCTIONS='["_main", "_GameInit", "_GameUpdate", "_GameRender", "_GameClose"]' \
     -s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]' \
+    --shell-file shell.html \
     $PRELOAD_OPTION
 
 echo "Build complete. Output in $OUT_DIR"
