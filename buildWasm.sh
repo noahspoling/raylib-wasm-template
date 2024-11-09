@@ -4,6 +4,7 @@ set -euo pipefail
 
 mkdir -p out_wasm
 SRC_FILES=$(find src -name '*.c') # Recursively find all .c files in src directory
+SRC_FILES+=" $(find src/game -name '*.c')" # Recursively find all .c files in src/game directory
 OUT_DIR="out_wasm"
 
 
@@ -21,6 +22,7 @@ fi
 emcc $SRC_FILES -o $OUT_DIR/index.html \
     -Ilib/raylib/src \
     lib/raylib/build_wasm/raylib/libraylib.a \
+    lib/json-c/build/.libs/libjson-c.a \
     -s USE_GLFW=3 \
     -s FULL_ES2=1 \
     -s ALLOW_MEMORY_GROWTH=1 \
