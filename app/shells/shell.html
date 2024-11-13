@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Raylib WASM Example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
         body {
@@ -10,7 +11,7 @@
             height: 100vh;
             margin: 0;
         }
-        #sidebar {
+        sidebar-component {
             width: 60px;
             background-color: #333;
             display: flex;
@@ -19,36 +20,34 @@
             padding-top: 20px;
             position: relative;
         }
-        #sidebar i {
+        sidebar-component i {
             color: white;
             font-size: 24px;
             margin: 20px 0;
             cursor: pointer;
             position: relative;
         }
-        #sidebar i:hover,
-        #sidebar i.active {
+        sidebar-component i:hover,
+        sidebar-component i.active {
             color: #4CAF50;
         }
-        #sidebar i:hover::after,
-        #sidebar i.active::after {
+        sidebar-component i:hover::after,
+        sidebar-component i.active::after {
             content: attr(data-label);
             position: absolute;
             left: 60px;
             top: 50%;
             transform: translateY(-50%);
-            background-color: #333;
+            background: #333;
             color: white;
-            padding: 5px 10px;
+            padding: 5px;
             border-radius: 5px;
-            white-space: nowrap;
         }
         #container {
             flex: 1;
             display: flex;
         }
         #uiSection {
-            z-index: -2;
             flex: 1;
             background: rgba(255, 255, 255, 0.2);
             padding: 20px;
@@ -56,7 +55,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            backdrop-filter: blur(10px);
+            /* backdrop-filter: blur(10px); */
         }
         #canvasContainer {
             flex: 2;
@@ -118,22 +117,21 @@
     </style>
 </head>
 <body>
-    <div id="sidebar">
+    <sidebar-component>
         <i class="fas fa-user" data-label="Player Settings" onclick="openModal('playerModal')"></i>
-        <i class="fas fa-list" data-label="Inventory" onclick="changeContent('player')"></i>
+        <i class="fas fa-box" data-label="Inventory" onclick="openModal('inventoryModal')"></i>
         <i class="fas fa-cog" data-label="Settings" onclick="openModal('settingsModal')"></i>
         <i class="fas fa-info-circle" data-label="Information" onclick="changeContent('info')"></i>
-        <i class="fas fa-map" data-label="Map" onclick="changeContent('map')"></i>
-        
-    </div>
+
+    </sidebar-component>
     <div id="container">
         <!-- UI Section -->
         <div id="uiSection">
             <h2>Player Settings</h2>
-            <form id="playerForm">
-                <label for="playerName">Player Name:</label><br>
+            <form id="gameForm">
+                <label for="gameName">Player Name:</label><br>
                 <input type="text" id="playerName" name="playerName" value="Player1"><br>
-                <button class="custom-button" type="submit">Submit</button>
+                <button class="custom-button" type="button" onclick="setPlayerName()">Submit</button>
             </form>
             <button class="custom-button" onclick="startGame()">Start Game</button>
             <button class="custom-button" onclick="pauseGame()">Pause Game</button>
@@ -151,10 +149,10 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal('playerModal')">&times;</span>
             <h2>Player Settings</h2>
-            <form id="playerModalForm">
-                <label for="modalPlayerName">Player Name:</label><br>
-                <input type="text" id="modalPlayerName" name="modalPlayerName" value="Player1"><br>
-                <button class="custom-button" type="button" onclick="setPlayerNameFromModal()">Submit</button>
+            <form id="playerForm">
+                <label for="playerName">Player Name:</label><br>
+                <input type="text" id="playerName" name="playerName" value="Player1"><br>
+                <button class="custom-button" type="button" onclick="setPlayerName()">Submit</button>
             </form>
         </div>
     </div>

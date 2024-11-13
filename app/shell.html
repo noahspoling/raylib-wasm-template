@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="InventoryMenu.js"></script>
+    <script src="SidebarComponent.js"></script>
+    <!-- <script src="ContainerComponent.js"></script> -->
+    <script src="ModalComponent.js"></script>
+    <script src="SidePanelComponent.js"></script>
+</head>
+<body>
+    <sidebar-component>
+        <ul>
+            <li>
+                <i class="fas fa-user" data-label="Player Settings" onclick="openModal('playerModal')"></i>
+            </li>
+            <li>
+                <i class="fas fa-cog" data-label="Settings" onclick="openModal('settingsModal')"></i>
+            </li>
+            <li>
+                <i class="fas fa-info-circle" data-label="Information" onclick="changeContent('info')"></i>
+            </li>
+        </ul>
+    </sidebar-component>
+    <container-component>
+        <div slot="uiSection">
+            <h2>Player Settings</h2>
+            <form id="gameForm">
+                <label for="gameName">Player Name:</label><br>
+                <input type="text" id="playerName" name="playerName" value="Player1"><br>
+                <button class="custom-button" type="button" onclick="setPlayerName()">Submit</button>
+            </form>
+            <button class="custom-button" onclick="startGame()">Start Game</button>
+            <button class="custom-button" onclick="pauseGame()">Pause Game</button>
+        </div>
+        <div slot="canvasContainer">
+            <h1>Raylib WASM Example</h1>
+            <canvas id="canvas"></canvas>
+        </div>
+    </container-component>
+
+    <modal-component id="playerModal">
+        <h2>Player Settings</h2>
+        <form id="playerForm">
+            <label for="playerName">Player Name:</label><br>
+            <input type="text" id="playerName" name="playerName" value="Player1"><br>
+            <button class="custom-button" type="button" onclick="setPlayerName()">Submit</button>
+        </form>
+    </modal-component>
+
+    <modal-component id="settingsModal">
+        <h2>Settings</h2>
+        <!-- Add settings form here -->
+    </modal-component>
+
+    <script type="text/javascript">
+        var Module = {
+            canvas: (function() {
+                var canvas = document.getElementById('canvas');
+                return canvas;
+            })(),
+            onRuntimeInitialized: function() {
+                console.log("Runtime initialized");
+                // Now you can safely call your C functions
+                Module.ccall('GameInit', null, [], { async: true });
+            }
+        };
+
+        let asyncOperationInProgress = false;
+
+        async function startGame() {
+            if (asyncOperationInProgress) {
+                console.log("Async operation already in progress");
+                return;
+            }
+            asyncOperationInProgress = true;
+            console.log("Game started");
+            await Module.ccall('GameInit', null, [], { async: true });
+            asyncOperationInProgress = false;
+        }
+
+        async function pauseGame() {
+            if (asyncOperationInProgress) {
+                console.log("Async operation already in progress");
+                return;
+            }
+            asyncOperationInProgress = true;
+            console.log("Game paused");
+            // Add code to pause the game here
+            asyncOperationInProgress = false;
+        }
+
+        document.getElementById('gameForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const playerName = document.getElementById('playerName').value;
+            const jsonData = JSON.stringify({ playerName: playerName });
+            console.log("Player name set to:", playerName);
+            Module.ccall('SetPlayerData', null, ['string'], [jsonData]);
+        });
+
+        function setPlayerNameFromModal() {
+            const playerName = document.getElementById('modalPlayerName').value;
+            const jsonData = JSON.stringify({ playerName: playerName });
+            console.log("Player name set to:", playerName);
+            Module.ccall('SetPlayerData', null, ['string'], [jsonData]);
+            closeModal('playerModal');
+        }
+
+        function openModal(modalId) {
+            document.getElementById(modalId).openModal();
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).closeModal();
+        }
+
+        function changeContent(contentType) {
+            const uiSection = document.querySelector('container-component').shadowRoot.querySelector('#uiSection');
+            if (contentType === 'info') {
+                uiSection.innerHTML = `
+                    <h2>Information</h2>
+                    <p>This is some information about the game.</p>
+                `;
+            } else if (contentType === 'settings') {
+                uiSection.innerHTML = `
+                    <h2>Settings</h2>
+                    <form id="settingsForm">
+                        <label for="setting1">Setting 1:</label><br>
+                        <input type="text" id="setting1" name="setting1"><br>
+                        <button class="custom-button" type="submit">Save Settings</button>
+                    </form>
+                `;
+            } else {
+                uiSection.innerHTML = `
+                    <h2>Player Settings</h2>
+                    <form id="playerForm">
+                        <label for="playerName">Player Name:</label><br>
+                        <input type="text" id="playerName" name="playerName" value="Player1"><br>
+                        <button class="custom-button" type="submit">Submit</button>
+                    </form>
+                    <button class="custom-button" onclick="startGame()">Start Game</button>
+                    <button class="custom-button" onclick="pauseGame()">Pause Game</button>
+                `;
+            }
+        }
+    </script>
+    {{{ SCRIPT }}}
+</body>
+</html>
